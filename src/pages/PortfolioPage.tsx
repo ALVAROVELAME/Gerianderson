@@ -54,7 +54,9 @@ export function PortfolioPage({ heroImage, socialImages, menuImages, printedImag
           images={lightboxState.images} 
           onClose={() => setLightboxState(null)} 
           onNext={nextLightbox} 
-          onPrev={prevLightbox} 
+          onPrev={prevLightbox}
+          // A função abaixo permite que os dots (pontos) alterem o estado do índice
+          setIndex={(newIndex: number) => setLightboxState({ ...lightboxState, index: newIndex })}
         />
       )}
       
@@ -133,7 +135,6 @@ export function PortfolioPage({ heroImage, socialImages, menuImages, printedImag
                   <img key={i} src={img} alt={`Slide de menu ${i + 1}`} className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === currentMenuSlide ? 'opacity-100' : 'opacity-0'}`} />
                 ))}
               </div>
-              {/* Botões de controle */}
               <button onClick={(e) => { e.stopPropagation(); setCurrentMenuSlide(prev => prev === 0 ? menuImages.length - 1 : prev - 1); }} className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 text-white rounded-full transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm hover:text-orange-500 z-10" aria-label="Anterior">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
               </button>

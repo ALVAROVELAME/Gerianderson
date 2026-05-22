@@ -1,44 +1,36 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Componente Lightbox para visualização de imagens em tela cheia.
- * Suporta navegação por teclado, cliques e gestos de toque (swipe).
+ * Componente Lightbox
+ * - Swipe e Teclado funcionam sempre.
+ * - Setas visíveis apenas em desktop (md:flex).
+ * - Pontos (dots) e contador visíveis sempre.
  */
-export function Lightbox({ index, images, onClose, onNext, onPrev }: any) {
-  // Referência para armazenar a coordenada X inicial do toque
+export function Lightbox({ index, images, onClose, onNext, onPrev, setIndex }: any) {
   const touchStartX = useRef(0);
 
-  // Efeito para capturar navegação via teclado
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') onNext(); // Próxima imagem
-      if (e.key === 'ArrowLeft') onPrev();  // Imagem anterior
-      if (e.key === 'Escape') onClose();    // Fecha o Lightbox
+      if (e.key === 'ArrowRight') onNext();
+      if (e.key === 'ArrowLeft') onPrev();
+      if (e.key === 'Escape') onClose();
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    // Limpeza do listener para evitar vazamento de memória
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onNext, onPrev, onClose]);
 
-  /**
-   * Registra a posição X inicial onde o usuário tocou na tela.
-   */
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.changedTouches[0].screenX;
   };
 
-  /**
-   * Calcula a distância do arraste e decide se deve avançar ou retroceder.
-   */
   const handleTouchEnd = (e: React.TouchEvent) => {
     const touchEndX = e.changedTouches[0].screenX;
     const diff = touchStartX.current - touchEndX;
 
-    // Define uma zona morta de 50px para evitar disparos acidentais
     if (Math.abs(diff) > 50) {
-      if (diff > 0) onNext(); // Arraste para a esquerda (próximo)
-      else onPrev();          // Arraste para a direita (anterior)
+      if (diff > 0) onNext();
+      else onPrev();
     }
   };
 
@@ -49,7 +41,7 @@ export function Lightbox({ index, images, onClose, onNext, onPrev }: any) {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Botão de Fechar: Posicionado no topo direito */}
+      {/* Botão Fechar */}
       <button 
         className="absolute top-6 right-6 text-white/50 hover:text-white z-[210] transition-colors" 
         onClick={onClose}
@@ -59,37 +51,51 @@ export function Lightbox({ index, images, onClose, onNext, onPrev }: any) {
         </svg>
       </button>
 
-      {/* Botão de Navegação Anterior */}
+      {/* Setas (Desktop apenas) */}
       <button 
         onClick={(e) => { e.stopPropagation(); onPrev(); }} 
-        className="absolute left-8 p-4 text-white hover:text-orange-500 bg-white/5 rounded-full z-[210] transition-all hover:bg-white/10"
+        className="absolute left-8 p-4 text-white hover:text-orange-500 bg-white/5 rounded-full z-[210] transition-all hidden md:flex"
       >
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
         </svg>
       </button>
 
-      {/* Área Central: Exibição da imagem e contador */}
+      {/* Área Central: Imagem + Dots + Contador */}
       <div className="relative w-full h-full flex flex-col items-center justify-center pointer-events-none">
         <img 
           src={images[index]} 
           alt="Visualização" 
-          className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 pointer-events-auto"
-          onClick={(e) => e.stopPropagation()} // Impede que o clique na imagem feche o Lightbox
+          className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 pointer-events-auto"
+          onClick={(e) => e.stopPropagation()}
         />
         
-        {/* Indicador de página (ex: 1 / 5) */}
-        <div className="mt-8 text-center">
-          <p className="text-white/40 text-xs font-bold tracking-widest uppercase mb-2">
+        {/* Container inferior com Dots e Contador */}
+        <div className="mt-8 flex flex-col items-center gap-4 pointer-events-auto">
+          {/* Dots Clicáveis */}
+          <div className="flex gap-2">
+            {images.map((_: any, i: number) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); setIndex(i); }}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  i === index ? 'bg-orange-500 scale-110' : 'bg-white/30 hover:bg-white/60'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Contador Numérico */}
+          <p className="text-white/60 text-xs font-bold tracking-widest uppercase">
             {index + 1} / {images.length}
           </p>
         </div>
       </div>
 
-      {/* Botão de Navegação Próximo */}
+      {/* Seta Próximo (Desktop apenas) */}
       <button 
         onClick={(e) => { e.stopPropagation(); onNext(); }} 
-        className="absolute right-8 p-4 text-white hover:text-orange-500 bg-white/5 rounded-full z-[210] transition-all hover:bg-white/10"
+        className="absolute right-8 p-4 text-white hover:text-orange-500 bg-white/5 rounded-full z-[210] transition-all hidden md:flex"
       >
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
