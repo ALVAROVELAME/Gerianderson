@@ -6,19 +6,15 @@ export default defineConfig({
   plugins: [
     react(),
     ViteImageOptimizer({
-      test: /\.(jpe?g|png|gif|webp|svg)$/i,
-      includePublic: true, // Processa tudo na pasta public
-      logStats: true,      // Mostra no terminal o quanto você economizou de peso
+      test: /\.(webp|svg)$/i, // Foca apenas no que você usa
+      includePublic: true,
+      logStats: true,
+      // Otimização para WebP (apenas compressão, sem conversão de formato)
       webp: {
         quality: 80,
+        lossless: false, // Define como false para permitir uma compressão melhor
       },
-      // Configurações para manter a qualidade alta mas o arquivo leve
-      mozjpeg: {
-        quality: 80,
-      },
-      png: {
-        quality: 80,
-      },
+      // Otimização para SVG
       svg: {
         multipass: true,
         plugins: [
