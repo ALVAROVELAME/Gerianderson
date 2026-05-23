@@ -3,8 +3,16 @@ export interface ResponsiveImage {
   srcset: string;
   sizes: string;
   alt: string;
-  width: number;  // Agora obrigatórios
+  width: number;
   height: number;
+}
+
+export interface PortfolioData {
+  heroImage: ResponsiveImage;
+  extraImage: ResponsiveImage;
+  socialImages: ResponsiveImage[];
+  menuImages: ResponsiveImage[];
+  printedImages: ResponsiveImage[];
 }
 
 class ImageItem implements ResponsiveImage {
@@ -40,11 +48,8 @@ class ImageItem implements ResponsiveImage {
   }
 }
 
-// ... (PortfolioData mantém igual)
-
 export const fetchPortfolioData = async (): Promise<PortfolioData> => {
   return {
-    // Agora você passa manualmente: new ImageItem(nome, alt, width, height, [sizes])
     heroImage: new ImageItem("principal", "Design de destaque", 1200, 675, "100vw"),
     extraImage: new ImageItem("extra", "Imagem extra do projeto", 800, 600),
     
