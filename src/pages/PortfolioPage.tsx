@@ -10,6 +10,8 @@ interface ResponsiveImage {
   srcset: string;
   sizes: string;
   alt: string;
+  width: number;  // Adicionado
+  height: number; // Adicionado
 }
 
 function ResponsiveImageComponent({ data, images, index, openLightbox }: { data: ResponsiveImage, images: ResponsiveImage[], index: number, openLightbox: (imgs: string[], idx: number) => void }) {
@@ -31,6 +33,8 @@ function ResponsiveImageComponent({ data, images, index, openLightbox }: { data:
         srcSet={data.srcset}
         sizes={data.sizes}
         alt={data.alt}
+        width={data.width}   // Corrigido: Usando a largura da interface
+        height={data.height} // Corrigido: Usando a altura da interface
         onLoad={(e) => {
           const img = e.target as HTMLImageElement;
           setIsLandscape(img.naturalWidth > img.naturalHeight);
@@ -97,7 +101,14 @@ export default function PortfolioPage() {
           </div>
           <div className="relative cursor-zoom-in" onClick={() => openLightbox([data.heroImage.src], 0)} role="button">
             <div className="bg-slate-200 aspect-video rounded-[2rem] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-all duration-500">
-              <img src={data.heroImage.src} alt={data.heroImage.alt} className="w-full h-full object-cover" fetchPriority="high" />
+              <img 
+                src={data.heroImage.src} 
+                alt={data.heroImage.alt} 
+                width={1200} // Corrigido: Dimensão para evitar CLS
+                height={675} // Corrigido: Proporção 16:9 compatível com aspect-video
+                className="w-full h-full object-cover" 
+                fetchPriority="high" 
+              />
             </div>
           </div>
         </header>
@@ -107,7 +118,16 @@ export default function PortfolioPage() {
             <div className="order-2 lg:order-1 grid grid-cols-2 gap-6">
               {data.socialImages.map((img, i) => (
                 <div key={i} className="aspect-[2/3] bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 p-2 cursor-zoom-in hover:shadow-2xl transition-all" onClick={() => openLightbox(data.socialImages.map(s => s.src), i)} role="button">
-                  <img src={img.src} srcSet={img.srcset} sizes={img.sizes} alt={img.alt} className="w-full h-full object-cover rounded-2xl" loading="lazy" />
+                  <img 
+                    src={img.src} 
+                    srcSet={img.srcset} 
+                    sizes={img.sizes} 
+                    alt={img.alt} 
+                    width={img.width || 400}  // Corrigido: Puxando da tipagem
+                    height={img.height || 600} // Corrigido: Puxando da tipagem
+                    className="w-full h-full object-cover rounded-2xl" 
+                    loading="lazy" 
+                  />
                 </div>
               ))}
             </div>
@@ -127,7 +147,17 @@ export default function PortfolioPage() {
             <div className="relative group cursor-zoom-in" onClick={() => openLightbox(data.menuImages.map(m => m.src), currentMenuSlide)} role="button">
               <div className="aspect-[4/3] bg-white/5 rounded-3xl overflow-hidden border border-white/10 relative shadow-2xl">
                 {data.menuImages.map((img, i) => (
-                  <img key={i} src={img.src} srcSet={img.srcset} sizes={img.sizes} alt={img.alt} className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === currentMenuSlide ? 'opacity-100' : 'opacity-0'}`} loading="lazy" />
+                  <img 
+                    key={i} 
+                    src={img.src} 
+                    srcSet={img.srcset} 
+                    sizes={img.sizes} 
+                    alt={img.alt} 
+                    width={img.width || 800}  // Corrigido
+                    height={img.height || 600} // Corrigido
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === currentMenuSlide ? 'opacity-100' : 'opacity-0'}`} 
+                    loading="lazy" 
+                  />
                 ))}
                 
                 {/* Botões de navegação (Setas) */}
