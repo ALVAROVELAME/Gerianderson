@@ -16,7 +16,7 @@ export interface PortfolioData {
 
 export const PORTFOLIO_DATA: PortfolioData = {
   heroImage: {
-    src: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=1000",
+    src: "/images/principal.webp", // Alterado para a sua imagem local
     alt: "Design de destaque"
   },
   socialImages: [
