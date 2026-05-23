@@ -32,4 +32,15 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        // Separa o React e outras dependências em um arquivo chamado 'vendor'
+        // Isso diminui o tamanho do seu código principal (index.js)
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        },
+      },
+    },
+  },
 })
