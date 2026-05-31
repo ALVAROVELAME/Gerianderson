@@ -1,10 +1,41 @@
-export interface ResponsiveImage {
-  src: string;
-  srcset: string;
-  sizes: string;
-  alt: string;
-  width: number;
-  height: number;
+// A classe agora é apenas uma geradora de dados estruturados
+export class ResponsiveImage {
+  // 1. Declare todas as propriedades explicitamente aqui
+  public src: string;
+  public srcset: string;
+  public sizes: string;
+  public name: string;
+  public width: number;
+  public height: number;
+  public alt: string;
+
+  // 2. Remova o 'public' dos parâmetros do construtor
+  constructor(
+    name: string,
+    width: number,
+    height: number,
+    alt: string,
+    sizes: string = "(max-width: 600px) 400px, (max-width: 900px) 800px, 1200px"
+  ) {
+    // 3. Faça a atribuição manual das propriedades do construtor
+    this.name = name;
+    this.width = width;
+    this.height = height;
+    this.alt = alt;
+
+    const isExternal = name.startsWith('http');
+
+    if (isExternal) {
+      this.src = name;
+      this.srcset = `${name} 1x`;
+      this.sizes = "100vw";
+    } else {
+      // Toda a regra de caminhos e tamanhos fica isolada aqui dentro
+      this.src = `/images/${name}.webp`;
+      this.srcset = `/images/${name}-400w.webp 400w, /images/${name}-800w.webp 800w`;
+      this.sizes = sizes;
+    }
+  }
 }
 
 export interface PortfolioData {
@@ -15,62 +46,29 @@ export interface PortfolioData {
   printedImages: ResponsiveImage[];
 }
 
-class ImageItem implements ResponsiveImage {
-  src: string;
-  srcset: string;
-  sizes: string;
-  alt: string;
-  width: number;
-  height: number;
-
-  constructor(
-    pathOrName: string, 
-    alt: string, 
-    width: number, 
-    height: number,
-    sizes: string = "(max-width: 600px) 400px, (max-width: 900px) 800px, 1200px"
-  ) {
-    this.width = width;
-    this.height = height;
-    const isExternal = pathOrName.startsWith('http');
-
-    if (isExternal) {
-      this.src = pathOrName;
-      this.srcset = `${pathOrName} 1x`;
-      this.sizes = "100vw";
-    } else {
-      this.src = `/images/${pathOrName}.webp`;
-      this.srcset = `/images/${pathOrName}-400w.webp 400w, /images/${pathOrName}-800w.webp 800w`;
-      this.sizes = sizes;
-    }
-    
-    this.alt = alt;
-  }
-}
-
 export const fetchPortfolioData = async (): Promise<PortfolioData> => {
   return {
-    heroImage: new ImageItem("principal", "Design de destaque", 1200, 675, "100vw"),
-    extraImage: new ImageItem("extra", "Imagem extra do projeto", 800, 400),
+    heroImage: new ResponsiveImage("principal", 1200, 675, "Design de destaque", "100vw"),
+    extraImage: new ResponsiveImage("extra", 800, 400, "Imagem extra do projeto"),
     
     socialImages: [
-      new ImageItem("post1", "Post social 1", 400, 800),
-      new ImageItem("post2", "Post social 2", 400, 800),
-      new ImageItem("post3", "Post social 3", 400, 800),
-      new ImageItem("post4", "Post social 4", 400, 800)
+      new ResponsiveImage("post1", 400, 800, "Post social 1"),
+      new ResponsiveImage("post2", 400, 800, "Post social 2"),
+      new ResponsiveImage("post3", 400, 800, "Post social 3"),
+      new ResponsiveImage("post4", 400, 800, "Post social 4")
     ],
     
     menuImages: [
-      new ImageItem("1", "Menu 1", 400, 800),
-      new ImageItem("2", "Menu 2", 400, 800),
-      new ImageItem("3", "Menu 3", 400, 800),
-      new ImageItem("4", "Menu 4", 400, 800)
+      new ResponsiveImage("1", 400, 800, "Menu 1"),
+      new ResponsiveImage("2", 400, 800, "Menu 2"),
+      new ResponsiveImage("3", 400, 800, "Menu 3"),
+      new ResponsiveImage("4", 400, 800, "Menu 4")
     ],
     
     printedImages: [
-      new ImageItem("panfleto1", "Panfleto 1", 400, 800),
-      new ImageItem("panfleto2", "Panfleto 2", 400, 800),
-      new ImageItem("panfleto3", "Panfleto 3", 400, 800),
+      new ResponsiveImage("panfleto1", 400, 800, "Panfleto 1"),
+      new ResponsiveImage("panfleto2", 400, 800, "Panfleto 2"),
+      new ResponsiveImage("panfleto3", 400, 800, "Panfleto 3"),
     ]
   };
 };

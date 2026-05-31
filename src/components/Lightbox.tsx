@@ -46,17 +46,21 @@ export function Lightbox({ index, images, onClose, onNext, onPrev, setIndex }: a
         type="button" 
         className="absolute top-6 right-6 text-white/50 hover:text-white z-[210] transition-colors" 
         onClick={onClose}
+        aria-label="Fechar visualização"
+        title="Fechar"
       >
         <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
 
-      {/* Setas (Desktop apenas) */}
+      {/* Seta Anterior (Desktop apenas) */}
       <button
         type="button" 
         onClick={(e) => { e.stopPropagation(); onPrev(); }} 
         className="absolute left-8 p-4 text-white hover:text-orange-500 bg-white/5 rounded-full z-[210] transition-all hidden md:flex"
+        aria-label="Imagem anterior"
+        title="Anterior"
       >
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
@@ -67,7 +71,7 @@ export function Lightbox({ index, images, onClose, onNext, onPrev, setIndex }: a
       <div className="relative w-full h-full flex flex-col items-center justify-center pointer-events-none">
         <img 
           src={images[index]} 
-          alt="Visualização" 
+          alt={`Visualização da imagem ${index + 1} de ${images.length}`} 
           className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         />
@@ -78,18 +82,21 @@ export function Lightbox({ index, images, onClose, onNext, onPrev, setIndex }: a
           <div className="flex gap-2">
             {images.map((_: any, i: number) => (
               <button
-              type="button"
+                type="button"
                 key={i}
                 onClick={(e) => { e.stopPropagation(); setIndex(i); }}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   i === index ? 'bg-orange-500 scale-110' : 'bg-white/30 hover:bg-white/60'
                 }`}
+                aria-label={`Ir para imagem ${i + 1}`}
+                aria-current={i === index ? "true" : undefined}
+                title={`Imagem ${i + 1}`}
               />
             ))}
           </div>
 
           {/* Contador Numérico */}
-          <p className="text-white/60 text-xs font-bold tracking-widest uppercase">
+          <p className="text-white/60 text-xs font-bold tracking-widest uppercase" aria-live="polite">
             {index + 1} / {images.length}
           </p>
         </div>
@@ -100,6 +107,8 @@ export function Lightbox({ index, images, onClose, onNext, onPrev, setIndex }: a
         type="button"
         onClick={(e) => { e.stopPropagation(); onNext(); }} 
         className="absolute right-8 p-4 text-white hover:text-orange-500 bg-white/5 rounded-full z-[210] transition-all hidden md:flex"
+        aria-label="Próxima imagem"
+        title="Próxima"
       >
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>

@@ -9,7 +9,7 @@ export function Navbar({ phone = "557598825022" }: NavbarProps) {
     <nav className="fixed top-0 w-full bg-[#FDFCFB]/80 backdrop-blur-md z-50 border-b border-slate-100">
       <div className="max-w-6xl mx-auto px-8 py-6 flex justify-between items-center">
         <div className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-          Gerianderson.DSGN
+          Quantyx.Artes
         </div>
         <div className="text-xs font-bold uppercase tracking-widest">
           <a 
